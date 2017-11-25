@@ -2,6 +2,7 @@ package kivaaz.com.driverapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,8 @@ public class RequestsActivity extends AppCompatActivity {
     RecyclerView acc_req_recycle;
 
     TextView availableTV, acceptedTV;
+    private SwipeRefreshLayout swipeContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +49,26 @@ public class RequestsActivity extends AppCompatActivity {
         myRef = database.getReference("Requests");
         AuthChecker();
 
-        req_recycle = (RecyclerView) findViewById(R.id.request_recycle);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                finish();
+                startActivity(getIntent());
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+    req_recycle = (RecyclerView) findViewById(R.id.request_recycle);
         acc_req_recycle = (RecyclerView) findViewById(R.id.acc_request_recycle);
 
         availableTV = (TextView) findViewById(R.id.availableTV);
         acceptedTV = (TextView) findViewById(R.id.acceptedTV);
-                
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -87,7 +104,9 @@ public class RequestsActivity extends AppCompatActivity {
                     adapter = new RequestAdapter(acc_reqList, getBaseContext(), new RequestAdapter.OnItemClick() {
                         @Override
                         public void OnClick(final String reqname, final String reqemail) {
-
+                            String uploadID = reqname.replace(" ","")+ "_" + reqemail.replace(".","");
+                            myRef.child(uploadID).child("reqAccepted").setValue(false);
+                            myRef.child(uploadID).child("acceptedBy").setValue("None");
                         }
                     });
                     acc_req_recycle.setAdapter(adapter);
