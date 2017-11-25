@@ -7,13 +7,53 @@
     tools:context="kivaaz.com.driverapp.RequestsActivity"
     android:orientation="vertical"
     android:padding="10dp">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/request_recycle"
-        android:layout_marginTop="10dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/availableTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Available Requests"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:background="@android:color/darker_gray"
+            android:padding="5dp"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/request_recycle"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
-    </android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/acceptedTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Accepted Requests"
+            android:gravity="center"
+            android:textColor="@android:color/black"
+            android:background="@android:color/darker_gray"
+            android:padding="5dp"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/acc_request_recycle"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
+
+
+
+
 
 </LinearLayout>

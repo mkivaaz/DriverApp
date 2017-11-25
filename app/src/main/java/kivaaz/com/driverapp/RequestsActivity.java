@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,9 +28,13 @@ public class RequestsActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     List<RequestList> reqList;
+    List<RequestList> acc_reqList;
     RequestAdapter adapter;
 
     RecyclerView req_recycle;
+    RecyclerView acc_req_recycle;
+
+    TextView availableTV, acceptedTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,28 +47,54 @@ public class RequestsActivity extends AppCompatActivity {
         AuthChecker();
 
         req_recycle = (RecyclerView) findViewById(R.id.request_recycle);
+        acc_req_recycle = (RecyclerView) findViewById(R.id.acc_request_recycle);
 
+        availableTV = (TextView) findViewById(R.id.availableTV);
+        acceptedTV = (TextView) findViewById(R.id.acceptedTV);
+                
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
                 reqList = new ArrayList<>();
+                acc_reqList = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     RequestList req = snapshot.getValue(RequestList.class);
                     if(!req.getReqAccepted()){
                         reqList.add(req);
+                    }else{
+                        if(req.getAcceptedBy().equals(mAuth.getCurrentUser().getEmail())){
+                            acc_reqList.add(req);
+                        }
                     }
                 }
                 if(!reqList.isEmpty()){
                     adapter = new RequestAdapter(reqList, getBaseContext(), new RequestAdapter.OnItemClick() {
                         @Override
                         public void OnClick(final String reqname, final String reqemail) {
-
-                            myRef.child(dataSnapshot.getKey()).child("reqAccepted").setValue(true);
-                            myRef.child(dataSnapshot.getKey()).child("acceptedBy").setValue(mAuth.getCurrentUser().getEmail());
+                            String uploadID = reqname.replace(" ","")+ "_" + reqemail.replace(".","");
+                            myRef.child(uploadID).child("reqAccepted").setValue(true);
+                            myRef.child(uploadID).child("acceptedBy").setValue(mAuth.getCurrentUser().getEmail());
                         }
                     });
                     req_recycle.setAdapter(adapter);
                     req_recycle.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL,false));
+                }else {
+                    availableTV.setText("No Requests Available");
+                    req_recycle.setVisibility(View.GONE);
+                }
+
+                if(!acc_reqList.isEmpty()){
+                    adapter = new RequestAdapter(acc_reqList, getBaseContext(), new RequestAdapter.OnItemClick() {
+                        @Override
+                        public void OnClick(final String reqname, final String reqemail) {
+
+                        }
+                    });
+                    acc_req_recycle.setAdapter(adapter);
+                    acc_req_recycle.setLayoutManager(new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL,false));
+                }else {
+                    acceptedTV.setText("You Haven't accepted any Requests");
+                    acc_req_recycle.setVisibility(View.GONE);
                 }
             }
 

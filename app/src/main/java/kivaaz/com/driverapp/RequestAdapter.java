@@ -1,6 +1,7 @@
 package kivaaz.com.driverapp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,10 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.myViewHo
 
     @Override
     public void onBindViewHolder(myViewHolder holder, int position) {
+        if(data.get(position).getReqAccepted()){
+            holder.accepted_btn.setText("Accepted");
+            holder.accepted_btn.setBackgroundColor(Color.parseColor("#972D2D"));
+        }
         holder.name.setText(data.get(position).getReqName());
         holder.desc.setText(data.get(position).getReqDesc());
         holder.email.setText(data.get(position).getReqEmail());
@@ -64,7 +69,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.myViewHo
                     int position = getLayoutPosition();
                     String reqName = data.get(position).getReqName();
                     String reqEmail = data.get(position).getReqEmail();
-
+                    accepted_btn.setText("Accepted");
+                    accepted_btn.setBackgroundColor(Color.parseColor("#972D2D"));
                     mCallback.OnClick(reqName,reqEmail);
                 }
             });
