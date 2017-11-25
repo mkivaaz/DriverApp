@@ -1,5 +1,6 @@
 package kivaaz.com.driverapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                                             logoutBtn.setVisibility(View.VISIBLE);
                                             loginBtn.setVisibility(View.GONE);
                                             signupBtn.setVisibility(View.GONE);
+                                            startActivity(new Intent(getBaseContext(),RequestsActivity.class));
                                         }
                                     });
                                 }
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                                 logoutBtn.setVisibility(View.VISIBLE);
                                                 loginBtn.setVisibility(View.GONE);
                                                 signupBtn.setVisibility(View.GONE);
-//                                                startActivity(new Intent(getBaseContext(),RequestsActivity.class));
+                                                startActivity(new Intent(getBaseContext(),RequestsActivity.class));
                                             }else {
                                                 Toast.makeText(MainActivity.this,"You're in the wrong app", Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
